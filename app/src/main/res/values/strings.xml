@@ -36,4 +36,6 @@
 
     <string name="stock_no_exist">Stock doesn\'t exist</string>
 
+    <string name="widget_title">Stocks</string>
+
 </resources>

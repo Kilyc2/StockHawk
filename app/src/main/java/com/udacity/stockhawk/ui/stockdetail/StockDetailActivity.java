@@ -1,30 +1,25 @@
 package com.udacity.stockhawk.ui.stockdetail;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.StockProvider;
+import com.udacity.stockhawk.utils.CursorUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -54,9 +49,11 @@ public class StockDetailActivity extends AppCompatActivity {
 
         Cursor cursor = getContentResolver().query(Contract.Quote.makeUriForStock(symbol),
                 null, null, null, null);
-        cursor.moveToFirst();
-        String history = cursor.getString(cursor.getColumnIndex(Contract.Quote.COLUMN_HISTORY));
-        cursor.close();
+        String history = "";
+        if (CursorUtil.isValidCursor(cursor)) {
+            history = cursor.getString(cursor.getColumnIndex(Contract.Quote.COLUMN_HISTORY));
+            CursorUtil.closeCursor(cursor);
+        }
         getData(history);
         drawGraph();
     }
