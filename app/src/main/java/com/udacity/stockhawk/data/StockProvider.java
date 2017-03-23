@@ -13,6 +13,8 @@ import android.support.annotation.Nullable;
 
 public class StockProvider extends ContentProvider {
 
+    private static final String UNKNOW_URI = "Unknown URI:";
+
     private static final int QUOTE = 100;
     private static final int QUOTE_FOR_SYMBOL = 101;
 
@@ -66,7 +68,7 @@ public class StockProvider extends ContentProvider {
 
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown URI:" + uri);
+                throw new UnsupportedOperationException(UNKNOW_URI + uri);
         }
 
         Context context = getContext();
@@ -99,7 +101,7 @@ public class StockProvider extends ContentProvider {
                 returnUri = Contract.Quote.URI;
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown URI:" + uri);
+                throw new UnsupportedOperationException(UNKNOW_URI + uri);
         }
 
         Context context = getContext();
@@ -137,7 +139,7 @@ public class StockProvider extends ContentProvider {
                 );
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown URI:" + uri);
+                throw new UnsupportedOperationException(UNKNOW_URI + uri);
         }
 
         if (rowsDeleted != 0) {
