@@ -20,4 +20,16 @@
         <item name="android:textSize">25sp</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
+    <style name="PercentChangeTextStyleWidget" parent="PercentChangeTextStyle">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="StockSymbolTextStyleWidget" parent="StockSymbolTextStyle">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="BidPriceTextStyleWidget" parent="BidPriceTextStyle">
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

@@ -12,6 +12,7 @@
         android:padding="5dp" >
 
         <ListView
+            android:id="@+id/stock_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

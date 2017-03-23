@@ -7,7 +7,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.widget.RemoteViews;
 
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.utils.CursorUtil;
@@ -22,44 +25,25 @@ public class StockWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        context.startService(new Intent(context, WidgetService.class));
-        Set<String> stockPref = PrefUtils.getStocks(context);
-        Set<String> stockCopy = new HashSet<>();
-        stockCopy.addAll(stockPref);
-        String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
-
-
-        if (stockArray.length == 0) {
-            return;
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            int widgetId = appWidgetIds[i];
+            updateWidget(context, appWidgetManager, widgetId);
         }
+    }
 
-        ContentResolver contentResolver = context.getContentResolver();
+    private void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) {
+        RemoteViews remoteViews = initViews(context, widgetId);
+        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+    }
 
-        Iterator<String> iterator = stockCopy.iterator();
+    private RemoteViews initViews(Context context, int widgetId) {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        List<ContentValues> quoteCVs = new ArrayList<>();
+        Intent intent = new Intent(context, WidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        remoteViews.setRemoteAdapter(widgetId, R.id.stock_list, intent);
 
-        while (iterator.hasNext()) {
-            ContentValues quoteCV = new ContentValues();
-
-            final String symbol = iterator.next();
-
-            Cursor cursor = contentResolver.query(Contract.Quote.makeUriForStock(symbol),
-                    null, null, null, null);
-
-            if (CursorUtil.isValidCursor(cursor)) {
-                float price = cursor.getFloat(cursor.getColumnIndex(Contract.Quote.COLUMN_PRICE));
-                float change = cursor.getFloat(cursor.getColumnIndex(Contract.Quote.COLUMN_ABSOLUTE_CHANGE));
-                float percentChange = cursor.getFloat(cursor.getColumnIndex(Contract.Quote.COLUMN_PERCENTAGE_CHANGE));
-
-                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
-                quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
-                quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-                quoteCVs.add(quoteCV);
-                CursorUtil.closeCursor(cursor);
-            }
-        }
+        return remoteViews;
     }
 }

@@ -1,17 +1,12 @@
 package com.udacity.stockhawk.widget;
 
-import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.widget.RemoteViewsService;
 
-public class WidgetService extends IntentService {
-
-    public WidgetService(String name) {
-        super(name);
-    }
+public class WidgetService extends RemoteViewsService {
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-
+    public RemoteViewsFactory onGetViewFactory(Intent intent) {
+        return new WidgetFactory(this.getApplicationContext());
     }
 }
